@@ -2,19 +2,54 @@
 # junitize - convert stdin to junit
 # Based on shUnit: https://github.com/akesterson/shunit
 # Requires shunit to be installed in order to run
-# arg 1: The class name
-# arg 2: The test name
+# Usage:
+# junitize [-f filename] [-o output file] [-c class name] [-t test name]
 
-if [ $# -ne 2 ]
+INPUT="/dev/stdin"
+
+USAGE="
+junitize [-f] [-c] [-t]
+Where:   -f|--filename   Input filename
+         -c|--classname  Name of test class
+         -t|--testname   Name of test
+"
+# Parse Command Line Arguments
+while [[ $# -gt 1 ]]
+do
+key="$1"
+
+case $key in
+	-f|--filename)
+	INPUT="$2"
+	shift # past argument
+	;;
+	-c|--classname)
+	CLASSNAME="$2"
+	shift # past argument
+	;;
+	-t|--testname)
+	TESTNAME="$2"
+	shift # past argument
+	;;
+	*)
+	# unknown option
+	echo "Unknown Option $2"
+	printf "$USAGE"
+	exit 1
+	;;
+esac
+shift # past argument or value
+done
+
+if [ -z "$CLASSNAME" -o -z "$TESTNAME" ]
 then
-	echo "arg 1: class name.  arg 2: test name"
+	echo "Missing Arguments"
+	printf "$USAGE"
 	exit 1
 fi
 
-
 start=$(date "+%s")
-CLASSNAME=$1
-TESTNAME=$2
+
 
 set -e
 source /usr/lib/junit.sh
@@ -22,7 +57,7 @@ set +e
 
 junit_header
 
-ERR=$(</dev/stdin)
+ERR=$(<$INPUT)
 ERRFLAG=1
 
 if [ -z "$ERR" ]

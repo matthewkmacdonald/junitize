@@ -5,7 +5,7 @@ Bash script for converting stdout into junit test results.  Useful if you want t
 Pipe standard output into junitize to generate a test failure in junit format.
 Example:
 ```
-$echo "Hello World" | junitize "Test Cases" "Hello World Test"
+$echo "Hello World" | junitize -c "Test Cases" -t "Hello World Test"
 ```
 Output:
 ```
@@ -24,7 +24,7 @@ Hello World
 If no input was received then junitize outputs success
 Example:
 ```
-$echo "" | junitize "Test Cases" "Hello World Test"
+$echo "" | junitize -c "Test Cases" -t "Hello World Test"
 ```
 Output:
 ```
